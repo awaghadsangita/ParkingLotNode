@@ -30,11 +30,4 @@ describe('test for parking lot',()=>{
         parkingLotObject.park(vehicleObj);
         assert.equal(parkingLotObject.unPark(vehicleObj),true);
     });
-
-    it('vehicle parked when parking lot is full should return true',()=>{
-        let vehicleObj=new vehicle.Vehicle();
-        let parkingLotObject=new Parkinglot.ParkingLots(1);
-        parkingLotObject.park(vehicleObj);
-        assert.equal(parkingLotObject.unPark(vehicleObj),true);
-    });
 });
