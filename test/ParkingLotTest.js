@@ -32,4 +32,16 @@ describe('test for un parking vehicle from parking lot',()=> {
         parkingLotObject.park(vehicleObj);
         assert.equal(parkingLotObject.unPark(vehicleObj),true);
     });
+
+    it('given undefined when un parked should return throw error', () => {
+        try {
+            let vehicleObj=new vehicle.Vehicle();
+            let parkingLotObject=new Parkinglot.ParkingLots();
+            parkingLotObject.park(vehicleObj);
+            parkingLotObject.unPark(undefined);
+        } catch (e) {
+            assert.equal(e.message, "vehicle can not be undefined");
+        }
+    });
+
 });

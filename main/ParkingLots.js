@@ -12,6 +12,9 @@ class ParkingLots {
     }
 
     unPark(vehicle) {
+        if(vehicle===undefined)
+            throw new Error('vehicle can not be undefined');
+
         if (this.vehicle ===vehicle) {
             this.vehicle = null;
             return true;
