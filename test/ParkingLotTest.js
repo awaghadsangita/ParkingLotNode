@@ -5,12 +5,12 @@ let vehicle=require('../main/Vehicle')
 describe('test for parking vehicle in parking lot',()=> {
     it('given vehicle when parked should return true', () => {
         let vehicleObj = new vehicle.Vehicle();
-        assert.equal(new Parkinglot.ParkingLots().park(vehicleObj), true);
+        assert.equal(new Parkinglot.ParkingLots(1).park(vehicleObj), true);
     });
 
     it('given null when parked should return throw error', () => {
         try {
-            new Parkinglot.ParkingLots().park(null)
+            new Parkinglot.ParkingLots(1).park(null)
         } catch (e) {
             assert.equal(e.message, "vehicle can not be null");
         }
@@ -18,16 +18,24 @@ describe('test for parking vehicle in parking lot',()=> {
 
     it('given undefined when parked should return throw error', () => {
         try {
-            new Parkinglot.ParkingLots().park(undefined)
+            new Parkinglot.ParkingLots(1).park(undefined)
         } catch (e) {
             assert.equal(e.message, "vehicle can not be undefined");
         }
     });
+
+    it('given vehicle when parked and lot is full should return true', () => {
+        let vehicle1 = new vehicle.Vehicle();
+        let parkingLot=new Parkinglot.ParkingLots(1)
+        parkingLot.park(vehicle1);
+        assert.equal(parkingLot.isFull(), true);
+    });
+
 });
 
 describe('test for un parking vehicle from parking lot',()=> {
     it('given vehicle parked and when un parked should return true',()=>{
-        let vehicleObj=new vehicle.Vehicle();
+        let vehicleObj=new vehicle.Vehicle(1);
         let parkingLotObject=new Parkinglot.ParkingLots();
         parkingLotObject.park(vehicleObj);
         assert.equal(parkingLotObject.unPark(vehicleObj),true);
@@ -35,7 +43,7 @@ describe('test for un parking vehicle from parking lot',()=> {
 
     it('given undefined when un parked should return throw error', () => {
         try {
-            let vehicleObj=new vehicle.Vehicle();
+            let vehicleObj=new vehicle.Vehicle(1);
             let parkingLotObject=new Parkinglot.ParkingLots();
             parkingLotObject.park(vehicleObj);
             parkingLotObject.unPark(undefined);
@@ -46,7 +54,7 @@ describe('test for un parking vehicle from parking lot',()=> {
 
     it('given null when un parked should return throw error', () => {
         try {
-            let vehicleObj=new vehicle.Vehicle();
+            let vehicleObj=new vehicle.Vehicle(1);
             let parkingLotObject=new Parkinglot.ParkingLots();
             parkingLotObject.park(vehicleObj);
             parkingLotObject.unPark(undefined);
@@ -54,5 +62,4 @@ describe('test for un parking vehicle from parking lot',()=> {
             assert.equal(e.message, "vehicle can not be null");
         }
     });
-
 });

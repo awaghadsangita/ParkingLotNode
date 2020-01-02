@@ -1,13 +1,17 @@
 class ParkingLots {
-    vehicle;
+    vehicle=[];
+    capacity;
+    constructor(capacity) {
+        this.capacity=capacity;
+    }
     park(vehicle) {
         if(vehicle===undefined)
             throw new Error('vehicle can not be undefined');
 
         if(vehicle==null)
             throw new Error('vehicle can not be null');
-
-        this.vehicle = vehicle;
+        if(this.isFull())
+        this.vehicle.push(vehicle);
         return true;
     }
 
@@ -18,11 +22,17 @@ class ParkingLots {
         if(vehicle==null)
             throw new Error('vehicle can not be null');
 
-        if (this.vehicle ===vehicle) {
-            this.vehicle = null;
+        if (!this.isEmpty()) {
+            this.vehicle.pop();
             return true;
         }
         return false;
+    }
+    isFull(){
+        return this.vehicle.length<=this.capacity;
+    }
+    isEmpty(){
+        return this.vehicle.length==0;
     }
 }
 module.exports = { ParkingLots }
