@@ -2,7 +2,7 @@ let assert=require('assert');
 let Parkinglot=require('../main/ParkingLots');
 let vehicle=require('../main/Vehicle')
 
-describe('test for parking lot',()=> {
+describe('test for parking vehicle in parking lot',()=> {
     it('given vehicle when parked should return true', () => {
         let vehicleObj = new vehicle.Vehicle();
         assert.equal(new Parkinglot.ParkingLots().park(vehicleObj), true);
