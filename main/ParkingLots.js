@@ -1,5 +1,9 @@
 class ParkingLots {
+    vehicle;
     park(vehicle) {
+        if(vehicle==null)
+            throw new Error('vehicle can not be null');
+
         this.vehicle = vehicle;
         return true;
     }
