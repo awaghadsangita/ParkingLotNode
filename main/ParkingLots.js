@@ -1,18 +1,24 @@
-class ParkingLots {
+parkingLotOwner=require('./ParkingLotOwner');
+class ParkingLots{
     vehicle=[];
     capacity;
+
     constructor(capacity) {
         this.capacity=capacity;
     }
+
     park(vehicle) {
         if(vehicle===undefined)
             throw new Error('vehicle can not be undefined');
 
         if(vehicle==null)
             throw new Error('vehicle can not be null');
-        if(this.isFull())
-        this.vehicle.push(vehicle);
-        return true;
+
+        if(!this.isFull()){
+            this.vehicle.push(vehicle);
+            return true;
+        }
+        return false;
     }
 
     unPark(vehicle) {
@@ -28,11 +34,18 @@ class ParkingLots {
         }
         return false;
     }
+
     isFull(){
-        return this.vehicle.length<=this.capacity;
+        let isFull=this.vehicle.length==this.capacity;
+        if(isFull){
+            return parkingLotOwner.isFull();
+        }
+        return isFull;
     }
+
     isEmpty(){
         return this.vehicle.length==0;
     }
 }
-module.exports = { ParkingLots }
+
+module.exports = {ParkingLots}
