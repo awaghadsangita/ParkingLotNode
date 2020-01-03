@@ -62,6 +62,12 @@ describe('test for un parking vehicle from parking lot',()=> {
             assert.equal(e.message, "vehicle can not be null");
         }
     });
+
+    it('when parking lot space is available informed to parking lot owner should return lot free space available', () => {
+        let vehicle1 = new vehicle.Vehicle();
+        Parkinglot.parkinglotObject.park(vehicle1);
+        assert.equal( Parkinglot.parkinglotObject.unPark(vehicle1), "free space available");
+    });
 });
 
 describe('test for parking lot is full',()=> {

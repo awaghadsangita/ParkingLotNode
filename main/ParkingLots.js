@@ -31,22 +31,23 @@ class ParkingLots extends EventEmitter {
     unPark(vehicle) {
         if (vehicle === undefined)
             throw new Error('vehicle can not be undefined');
-
         if (vehicle == null)
             throw new Error('vehicle can not be null');
-
-        if (!this.isEmpty()) {
+        let isAvailable = false;
+        if (this.capacity == this.vehicle.length) {
+            isAvailable = true;
+        }
+        if (this.vehicle.length < this.capacity) {
             this.vehicle.pop();
             return true;
         }
-        const e = {message: ""}
-        this.emit('isEmpty', e);
-        return e.message;
+        if (isAvailable) {
+            const e = {message: ""}
+            this.emit('isEmpty', e);
+            return e.message;
+        }
     }
 
-    isEmpty() {
-        return this.vehicle.length == 0;
-    }
 }
 
 let parkinglotObject = new ParkingLots(1)
@@ -57,6 +58,12 @@ parkinglotObject.on("isFull", (e) => {
         airportSecurity.isFull(e);
     } else
         e.message = "free space available"
+});
+
+parkinglotObject.on("isEmpty", (e) => {
+    e.message = "free space available"
+    parkingLotOwner.isAvailable(e);
+
 });
 
 module.exports = {ParkingLots, parkinglotObject}
