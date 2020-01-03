@@ -31,6 +31,17 @@ describe('test for parking vehicle in parking lot',()=> {
         assert.equal(parkingLot.isFull(), true);
     });
 
+    it('when parking lot is full informed to airport security should return lot is Full', () => {
+        let vehicle1 = new vehicle.Vehicle();
+        Parkinglot.parkinglotObject.park(vehicle1);
+        assert.equal( Parkinglot.parkinglotObject.park(new vehicle.Vehicle()), "lot is Full");
+    });
+
+    it('when parking lot is full informed to parking lot owner should return lot is Full', () => {
+        let vehicle1 = new vehicle.Vehicle();
+        Parkinglot.parkinglotObject.park(vehicle1);
+        assert.equal( Parkinglot.parkinglotObject.park(new vehicle.Vehicle()), "lot is Full");
+    });
 });
 
 describe('test for un parking vehicle from parking lot',()=> {

@@ -52,12 +52,10 @@ class ParkingLots extends EventEmitter {
 
 let parkinglotObject = new ParkingLots(1)
 parkinglotObject.on("isFull", (e) => {
-    if (parkinglotObject.capacity == parkinglotObject.vehicle.length) {
-        e.message = "lot is Full";
-        parkingLotOwner.isFull(e);
-        airportSecurity.isFull(e);
-    } else
-        e.message = "free space available"
+    e.message = "lot is Full";
+    parkingLotOwner.isFull(e);
+    airportSecurity.isFull(e);
+
 });
 
 parkinglotObject.on("isEmpty", (e) => {
