@@ -1,32 +1,37 @@
-parkingLotOwner=require('./ParkingLotOwner');
-airportSecurity=require('./AirportSecurity');
-class ParkingLots{
-    vehicle=[];
+parkingLotOwner = require('./ParkingLotOwner');
+airportSecurity = require('./AirportSecurity');
+const EventEmitter = require('events').EventEmitter;
+
+class ParkingLots extends EventEmitter {
+    vehicle = [];
     capacity;
 
     constructor(capacity) {
-        this.capacity=capacity;
+        super();
+        this.capacity = capacity;
     }
 
     park(vehicle) {
-        if(vehicle===undefined)
+        if (vehicle === undefined)
             throw new Error('vehicle can not be undefined');
 
-        if(vehicle==null)
+        if (vehicle == null)
             throw new Error('vehicle can not be null');
 
-        if(!this.isFull()){
+        if (!this.isFull()) {
             this.vehicle.push(vehicle);
             return false;
         }
-        return true;
+        const e = {message: ""}
+        this.emit('isFull', e);
+        return e.message;
     }
 
     unPark(vehicle) {
-        if(vehicle===undefined)
+        if (vehicle === undefined)
             throw new Error('vehicle can not be undefined');
 
-        if(vehicle==null)
+        if (vehicle == null)
             throw new Error('vehicle can not be null');
 
         if (!this.isEmpty()) {
@@ -36,19 +41,24 @@ class ParkingLots{
         return false;
     }
 
-    isFull(){
-        let isFull=this.vehicle.length==this.capacity;
-        if(isFull){
-            parkingLotOwner.isFull();
-            airportSecurity.isFull();
-            return true;
-        }
+    isFull() {
+        let isFull = this.vehicle.length == this.capacity;
         return isFull;
     }
 
-    isEmpty(){
-        return this.vehicle.length==0;
+    isEmpty() {
+        return this.vehicle.length == 0;
     }
 }
 
-module.exports = {ParkingLots}
+let obj = new ParkingLots(1)
+obj.on("isFull", (e) => {
+    if(obj.capacity==obj.vehicle.length)
+        e.message = "lot is Full";
+    else
+        e.message= "free space available"
+});
+module.exports = {ParkingLots, obj}
+
+
+
