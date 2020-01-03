@@ -1,4 +1,5 @@
 parkingLotOwner=require('./ParkingLotOwner');
+airportSecurity=require('./AirportSecurity');
 class ParkingLots{
     vehicle=[];
     capacity;
@@ -16,9 +17,9 @@ class ParkingLots{
 
         if(!this.isFull()){
             this.vehicle.push(vehicle);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     unPark(vehicle) {
@@ -38,7 +39,9 @@ class ParkingLots{
     isFull(){
         let isFull=this.vehicle.length==this.capacity;
         if(isFull){
-            return parkingLotOwner.isFull();
+            parkingLotOwner.isFull();
+            airportSecurity.isFull();
+            return true;
         }
         return isFull;
     }

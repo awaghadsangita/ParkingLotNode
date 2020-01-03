@@ -3,9 +3,9 @@ let Parkinglot=require('../main/ParkingLots');
 let vehicle=require('../main/Vehicle');
 
 describe('test for parking vehicle in parking lot',()=> {
-    it('given vehicle when parked should return true', () => {
+    it('given vehicle when parked should return false', () => {
         let vehicleObj = new vehicle.Vehicle();
-        assert.equal(new Parkinglot.ParkingLots(1).park(vehicleObj), true);
+        assert.equal(new Parkinglot.ParkingLots(1).park(vehicleObj), false);
     });
 
     it('given null when parked should return throw error', () => {
@@ -67,7 +67,15 @@ describe('test for un parking vehicle from parking lot',()=> {
 describe('test for parking lot is full',()=> {
     it('when parking lot is full informed to parking lot owner should return true', () => {
         let vehicle1 = new vehicle.Vehicle();
-        let parkingLotObject=new Parkinglot.ParkingLots();
+        let parkingLotObject=new Parkinglot.ParkingLots(1);
+        parkingLotObject.park(vehicle1);
+        let vehicle2 = new vehicle.Vehicle();
+        assert.equal(parkingLotObject.park(vehicle2), true);
+    });
+
+    it('when parking lot is full informed to airport security should return true', () => {
+        let vehicle1 = new vehicle.Vehicle();
+        let parkingLotObject=new Parkinglot.ParkingLots(1);
         parkingLotObject.park(vehicle1);
         let vehicle2 = new vehicle.Vehicle();
         assert.equal(parkingLotObject.park(vehicle2), true);
