@@ -51,14 +51,14 @@ class ParkingLots extends EventEmitter {
     }
 }
 
-let obj = new ParkingLots(1)
-obj.on("isFull", (e) => {
-    if(obj.capacity==obj.vehicle.length)
+let parkinglotObject = new ParkingLots(1)
+parkinglotObject.on("isFull", (e) => {
+    if(parkinglotObject.capacity==parkinglotObject.vehicle.length)
         e.message = "lot is Full";
     else
         e.message= "free space available"
 });
-module.exports = {ParkingLots, obj}
+module.exports = {ParkingLots, parkinglotObject}
 
 
 
