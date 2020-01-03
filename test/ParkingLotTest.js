@@ -95,4 +95,25 @@ describe('test for parking lot is full',()=> {
         let vehicle2 = new vehicle.Vehicle();
         assert.equal(Parkinglot.parkinglotObject.park(vehicle2), "lot is Full");
     });
+
+    it('given vehicles when parked and two unparked then one parked should informed available empty slot', () => {
+        let vehicle1 = new vehicle.Vehicle();
+        let parkingLotObject=new Parkinglot.ParkingLots(5);
+        parkingLotObject.park(vehicle1,0);
+        let vehicle2 = new vehicle.Vehicle();
+        parkingLotObject.park(vehicle2,1);
+        let vehicle3 = new vehicle.Vehicle();
+        parkingLotObject.park(vehicle3,2);
+        let vehicle4 = new vehicle.Vehicle();
+        parkingLotObject.park(vehicle4,3);
+        let vehicle5 = new vehicle.Vehicle();
+        parkingLotObject.park(vehicle5,4);
+        parkingLotObject.unPark(vehicle2);
+        parkingLotObject.unPark(vehicle5);
+        parkingLotObject.park(new vehicle.Vehicle(),1);
+        let arr=parkingLotObject.giveEmptySlots();
+        assert.equal(arr, 4);
+    });
+
+
 });

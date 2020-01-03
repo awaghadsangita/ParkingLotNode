@@ -3,23 +3,28 @@ airportSecurity = require('./AirportSecurity');
 const EventEmitter = require('events').EventEmitter;
 
 class ParkingLots extends EventEmitter {
-    vehicle = [];
+    vehicle ;
     capacity;
+    currentCapacity;
 
     constructor(capacity) {
         super();
         this.capacity = capacity;
+        this.vehicle=[];
+        this.currentCapacity=0;
     }
 
-    park(vehicle) {
+    park(vehicle,slotNumber) {
         if (vehicle === undefined)
             throw new Error('vehicle can not be undefined');
 
         if (vehicle == null)
             throw new Error('vehicle can not be null');
 
-        if (this.vehicle.length < this.capacity) {
-            this.vehicle.push(vehicle);
+        if (this.currentCapacity < this.capacity) {
+            this.vehicle[slotNumber]=vehicle;
+            console.log(this.vehicle);
+            this.currentCapacity++;
             return false;
         } else {
             const e = {message: ""}
@@ -37,8 +42,19 @@ class ParkingLots extends EventEmitter {
         if (this.capacity == this.vehicle.length) {
             isAvailable = true;
         }
-        if (this.vehicle.length < this.capacity) {
-            this.vehicle.pop();
+        let index=-1;
+        if (this.currentCapacity <= this.capacity) {
+            console.log(this.vehicle);
+            for(let i=0;i<this.vehicle.length;i++){
+                if(this.vehicle[i]==vehicle){
+                    index=i;
+
+                    this.vehicle.splice(index,1,undefined);
+                    console.log(this.vehicle[i]);
+                    break;
+                }
+            }
+            this.currentCapacity--;
             return true;
         }
         if (isAvailable) {
@@ -47,7 +63,18 @@ class ParkingLots extends EventEmitter {
             return e.message;
         }
     }
-
+    giveEmptySlots(){
+        let emptySlotsArray=[]
+        if(this.currentCapacity<this.capacity){
+            for(let i=0;i<this.capacity;i++){
+                // console.log(this.vehicle[i]);
+                if(this.vehicle[i]==null){
+                    emptySlotsArray.push(i);
+                }
+            }
+        }
+        return emptySlotsArray;
+    }
 }
 
 let parkinglotObject = new ParkingLots(1)
@@ -55,7 +82,6 @@ parkinglotObject.on("isFull", (e) => {
     e.message = "lot is Full";
     parkingLotOwner.isFull(e);
     airportSecurity.isFull(e);
-
 });
 
 parkinglotObject.on("isEmpty", (e) => {
