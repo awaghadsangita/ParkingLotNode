@@ -18,13 +18,14 @@ class ParkingLots extends EventEmitter {
         if (vehicle == null)
             throw new Error('vehicle can not be null');
 
-        if (!this.isFull()) {
+        if (this.vehicle.length < this.capacity) {
             this.vehicle.push(vehicle);
             return false;
+        } else {
+            const e = {message: ""}
+            this.emit('isFull', e);
+            return e.message;
         }
-        const e = {message: ""}
-        this.emit('isFull', e);
-        return e.message;
     }
 
     unPark(vehicle) {
@@ -38,12 +39,9 @@ class ParkingLots extends EventEmitter {
             this.vehicle.pop();
             return true;
         }
-        return false;
-    }
-
-    isFull() {
-        let isFull = this.vehicle.length == this.capacity;
-        return isFull;
+        const e = {message: ""}
+        this.emit('isEmpty', e);
+        return e.message;
     }
 
     isEmpty() {
@@ -53,11 +51,14 @@ class ParkingLots extends EventEmitter {
 
 let parkinglotObject = new ParkingLots(1)
 parkinglotObject.on("isFull", (e) => {
-    if(parkinglotObject.capacity==parkinglotObject.vehicle.length)
+    if (parkinglotObject.capacity == parkinglotObject.vehicle.length) {
         e.message = "lot is Full";
-    else
-        e.message= "free space available"
+        parkingLotOwner.isFull(e);
+        airportSecurity.isFull(e);
+    } else
+        e.message = "free space available"
 });
+
 module.exports = {ParkingLots, parkinglotObject}
 
 

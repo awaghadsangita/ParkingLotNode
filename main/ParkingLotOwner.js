@@ -1,7 +1,5 @@
 class ParkingLotOwner {
-    isFull(obj){
-        const e={message:"free space available"}
-        obj.emit('isFull',e);
+    isFull(e){
         return e.message;
     }
 }

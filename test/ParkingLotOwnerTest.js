@@ -7,6 +7,7 @@ describe('test for parking lot is full',()=> {
     it('when parking lot is full informed to parking lot owner should return lot is Full', () => {
         let vehicle1 = new vehicle.Vehicle();
         Parkinglot.parkinglotObject.park(vehicle1);
-        assert.equal(parkinglotOwner.isFull(Parkinglot.parkinglotObject), "lot is Full");
+        assert.equal( Parkinglot.parkinglotObject.park(new vehicle.Vehicle()), "lot is Full");
     });
 });
+
