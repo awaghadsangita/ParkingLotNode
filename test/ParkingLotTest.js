@@ -43,12 +43,12 @@ describe('test for parking vehicle in parking lot', () => {
         assert.equal(Parkinglot.parkinglotObject.park(new vehicle.Vehicle()), "lot is Full");
     });
 
-    it('given vehicle already parked When again parked should throw error',()=>{
-        try{
-            let vehicle1=new vehicle.Vehicle();
-            let parkingLotObject=new Parkinglot.ParkingLots(2)
-            parkingLotObject.park(vehicle1,0);
-            parkingLotObject.park(vehicle1,1);
+    it('given vehicle already parked When again parked should throw error', () => {
+        try {
+            let vehicle1 = new vehicle.Vehicle();
+            let parkingLotObject = new Parkinglot.ParkingLots(2)
+            parkingLotObject.park(vehicle1, 0);
+            parkingLotObject.park(vehicle1, 1);
         } catch (e) {
             assert.equal(e.message, "Vehicle is already parked");
         }
@@ -89,6 +89,18 @@ describe('test for un parking vehicle from parking lot', () => {
         let vehicle1 = new vehicle.Vehicle();
         Parkinglot.parkinglotObject.park(vehicle1);
         assert.equal(Parkinglot.parkinglotObject.unPark(vehicle1), "free space available");
+    });
+
+    it('given vehicle is not parked when try to un park should throw error', () => {
+        try {
+            let vehicle1 = new vehicle.Vehicle();
+            let vehicle2 = new vehicle.Vehicle();
+            let parkingLotObject = new Parkinglot.ParkingLots(2)
+            parkingLotObject.park(vehicle1, 0);
+            parkingLotObject.unPark(vehicle2);
+        } catch (e) {
+            assert.equal(e.message, "Vehicle is already parked");
+        }
     });
 });
 

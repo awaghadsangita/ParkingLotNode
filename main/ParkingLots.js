@@ -20,7 +20,7 @@ class ParkingLots extends EventEmitter {
 
         if (vehicle == null)
             throw new Error('vehicle can not be null');
-        let isParked =this.checkAlreadyPark(vehicle);
+        let isParked = this.checkAlreadyPark(vehicle);
         if (!isParked) {
             if (this.currentCapacity < this.capacity) {
                 this.vehicle[slotNumber] = vehicle;
@@ -40,12 +40,12 @@ class ParkingLots extends EventEmitter {
         if (vehicle == null)
             throw new Error('vehicle can not be null');
         let isAvailable = false;
-        if (this.capacity == this.vehicle.length) {
+        if (this.capacity == this.currentCapacity) {
             isAvailable = true;
         }
+
         let index = -1;
         if (this.currentCapacity <= this.capacity) {
-            console.log(this.vehicle);
             for (let i = 0; i < this.vehicle.length; i++) {
                 if (this.vehicle[i] == vehicle) {
                     index = i;
@@ -54,8 +54,11 @@ class ParkingLots extends EventEmitter {
                 }
             }
             this.currentCapacity--;
+            if (index == -1)
+                throw new Error('Vehicle is already parked');
             return true;
         }
+
         if (isAvailable) {
             const e = {message: ""}
             this.emit('isEmpty', e);
@@ -77,8 +80,6 @@ class ParkingLots extends EventEmitter {
 
     checkAlreadyPark(vehicle) {
         let isParked = false;
-        console.log(this.vehicle)
-        console.log(this.vehicle[0]==vehicle)
         for (let i = 0; i < this.capacity; i++) {
             if (this.vehicle[i] === vehicle) {
                 throw new Error('Vehicle is already parked');
@@ -86,6 +87,18 @@ class ParkingLots extends EventEmitter {
         }
         return isParked;
     }
+
+    // checkVehicleIsAvaiableToUnpark(vehicle) {
+    //     console.log(this.vehicle)
+    //     console.log(this.vehicle[0]==vehicle)
+    //     for (let i = 0; i < this.capacity; i++) {
+    //         if (this.vehicle[i] == vehicle) {
+    //             return true;
+    //         }
+    //     }
+    //     throw new Error('Vehicle is already parked');
+    //
+    // }
 
     findMyVehicle(vehicle) {
         let slotIndex = -1;
