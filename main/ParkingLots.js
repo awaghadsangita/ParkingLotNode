@@ -20,16 +20,17 @@ class ParkingLots extends EventEmitter {
 
         if (vehicle == null)
             throw new Error('vehicle can not be null');
-
-        if (this.currentCapacity < this.capacity) {
-            this.vehicle[slotNumber] = vehicle;
-            console.log(this.vehicle);
-            this.currentCapacity++;
-            return false;
-        } else {
-            const e = {message: ""}
-            this.emit('isFull', e);
-            return e.message;
+        let isParked =this.checkAlreadyPark(vehicle);
+        if (!isParked) {
+            if (this.currentCapacity < this.capacity) {
+                this.vehicle[slotNumber] = vehicle;
+                this.currentCapacity++;
+                return false;
+            } else {
+                const e = {message: ""}
+                this.emit('isFull', e);
+                return e.message;
+            }
         }
     }
 
@@ -72,6 +73,18 @@ class ParkingLots extends EventEmitter {
             }
         }
         return emptySlotsArray;
+    }
+
+    checkAlreadyPark(vehicle) {
+        let isParked = false;
+        console.log(this.vehicle)
+        console.log(this.vehicle[0]==vehicle)
+        for (let i = 0; i < this.capacity; i++) {
+            if (this.vehicle[i] === vehicle) {
+                throw new Error('Vehicle is already parked');
+            }
+        }
+        return isParked;
     }
 
     findMyVehicle(vehicle) {
