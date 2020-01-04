@@ -3,18 +3,18 @@ airportSecurity = require('./AirportSecurity');
 const EventEmitter = require('events').EventEmitter;
 
 class ParkingLots extends EventEmitter {
-    vehicle ;
+    vehicle;
     capacity;
     currentCapacity;
 
     constructor(capacity) {
         super();
         this.capacity = capacity;
-        this.vehicle=[];
-        this.currentCapacity=0;
+        this.vehicle = [];
+        this.currentCapacity = 0;
     }
 
-    park(vehicle,slotNumber) {
+    park(vehicle, slotNumber) {
         if (vehicle === undefined)
             throw new Error('vehicle can not be undefined');
 
@@ -22,7 +22,7 @@ class ParkingLots extends EventEmitter {
             throw new Error('vehicle can not be null');
 
         if (this.currentCapacity < this.capacity) {
-            this.vehicle[slotNumber]=vehicle;
+            this.vehicle[slotNumber] = vehicle;
             console.log(this.vehicle);
             this.currentCapacity++;
             return false;
@@ -42,15 +42,13 @@ class ParkingLots extends EventEmitter {
         if (this.capacity == this.vehicle.length) {
             isAvailable = true;
         }
-        let index=-1;
+        let index = -1;
         if (this.currentCapacity <= this.capacity) {
             console.log(this.vehicle);
-            for(let i=0;i<this.vehicle.length;i++){
-                if(this.vehicle[i]==vehicle){
-                    index=i;
-
-                    this.vehicle.splice(index,1,undefined);
-                    console.log(this.vehicle[i]);
+            for (let i = 0; i < this.vehicle.length; i++) {
+                if (this.vehicle[i] == vehicle) {
+                    index = i;
+                    this.vehicle.splice(index, 1, undefined);
                     break;
                 }
             }
@@ -63,17 +61,28 @@ class ParkingLots extends EventEmitter {
             return e.message;
         }
     }
-    giveEmptySlots(){
-        let emptySlotsArray=[]
-        if(this.currentCapacity<this.capacity){
-            for(let i=0;i<this.capacity;i++){
-                // console.log(this.vehicle[i]);
-                if(this.vehicle[i]==null){
+
+    giveEmptySlots() {
+        let emptySlotsArray = []
+        if (this.currentCapacity < this.capacity) {
+            for (let i = 0; i < this.capacity; i++) {
+                if (this.vehicle[i] == null) {
                     emptySlotsArray.push(i);
                 }
             }
         }
         return emptySlotsArray;
+    }
+
+    findMyVehicle(vehicle) {
+        let slotIndex = -1;
+        for (let i = 0; i < this.vehicle.length; i++) {
+            if (this.vehicle[i] == vehicle) {
+                slotIndex = i;
+                break;
+            }
+        }
+        return slotIndex;
     }
 }
 

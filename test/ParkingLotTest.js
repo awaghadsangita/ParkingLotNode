@@ -115,5 +115,17 @@ describe('test for parking lot is full',()=> {
         assert.equal(arr, 4);
     });
 
+    it('given vehicle should return slotnumber of parkinglot', () => {
 
+        let vehicle1 = new vehicle.Vehicle();
+        let parkingLotObject=new Parkinglot.ParkingLots(3);
+        parkingLotObject.park(vehicle1,0);
+        let vehicle2 = new vehicle.Vehicle();
+        parkingLotObject.park(vehicle2,1);
+        let vehicle3 = new vehicle.Vehicle();
+        parkingLotObject.park(vehicle3,2);
+        let result=parkingLotObject.findMyVehicle(vehicle3);
+        assert.equal(result,2);
+
+})
 });
