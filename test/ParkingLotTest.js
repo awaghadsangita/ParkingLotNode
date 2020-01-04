@@ -1,7 +1,9 @@
 let assert = require('assert');
+var sleep = require('sleep');
+
 let Parkinglot = require('../main/ParkingLots');
 let vehicle = require('../main/Vehicle');
-
+let dateFormat = require('dateformat');
 describe('test for parking vehicle in parking lot', () => {
     it('given vehicle when parked should return false', () => {
         let vehicleObj = new vehicle.Vehicle();
@@ -47,13 +49,11 @@ describe('test for parking vehicle in parking lot', () => {
         }
     });
 
-    it('given vehicle when parked and un parked should return time difference', () => {
+    it('given vehicle when parked ,note in time should return false', () => {
         let vehicle1 = new vehicle.Vehicle();
-        let vehicle2 = new vehicle.Vehicle();
         let parkingLot = new Parkinglot.ParkingLots(2)
-        parkingLot.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"},0);
-        parkingLot.park({'vehicle':vehicle2,'inTime':"2012-05-18 06:37:21"},1);
-      //  assert.equal(Parkinglot.parkinglotObject.park(new vehicle.Vehicle()), "lot is Full");
+        let day1=new Date();
+        assert.equal(parkingLot.park({'vehicle':vehicle1,'inTime':day1},0),false);
     });
 });
 

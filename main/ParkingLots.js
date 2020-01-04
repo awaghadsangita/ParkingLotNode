@@ -1,5 +1,6 @@
 parkingLotOwner = require('./ParkingLotOwner');
 airportSecurity = require('./AirportSecurity');
+let dateFormat = require('dateformat');
 const EventEmitter = require('events').EventEmitter;
 
 class ParkingLots extends EventEmitter {
@@ -46,15 +47,15 @@ class ParkingLots extends EventEmitter {
         }
 
         let index = -1;
+        let diff=0;
         if (this.currentCapacity <= this.capacity) {
             for (let i = 0; i < this.parkingSlot.length; i++) {
-                if (this.parkingSlot[i] != undefined) {
-                    if (this.parkingSlot[i].vehicle == vehicle.vehicle) {
+                    if (this.parkingSlot[i] != undefined && this.parkingSlot[i].vehicle == vehicle.vehicle ) {
                         index = i;
+                        console.log(vehicle)
                         this.parkingSlot.splice(index, 1, undefined);
                         break;
                     }
-                }
             }
             this.currentCapacity--;
             if (index == -1)
@@ -97,13 +98,11 @@ class ParkingLots extends EventEmitter {
         let slotIndex = -1;
         console.log(vehicle);
         for (let i = 0; i < this.parkingSlot.length; i++) {
-            if (this.parkingSlot[i] != undefined) {
-                if (this.parkingSlot[i].vehicle == vehicle.vehicle) {
+                if (this.parkingSlot[i].vehicle == vehicle.vehicle && this.parkingSlot[i] != undefined) {
                     slotIndex = i;
                     break;
                 }
             }
-        }
         return slotIndex;
     }
 }
