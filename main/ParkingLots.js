@@ -3,14 +3,14 @@ airportSecurity = require('./AirportSecurity');
 const EventEmitter = require('events').EventEmitter;
 
 class ParkingLots extends EventEmitter {
-    vehicle;
+    parkingSlot;
     capacity;
     currentCapacity;
 
     constructor(capacity) {
         super();
         this.capacity = capacity;
-        this.vehicle = [];
+        this.parkingSlot = [];
         this.currentCapacity = 0;
     }
 
@@ -23,7 +23,7 @@ class ParkingLots extends EventEmitter {
         let isParked = this.checkAlreadyPark(vehicle);
         if (!isParked) {
             if (this.currentCapacity < this.capacity) {
-                this.vehicle[slotNumber] = vehicle;
+                this.parkingSlot[slotNumber] = vehicle;
                 this.currentCapacity++;
                 return false;
             } else {
@@ -46,10 +46,10 @@ class ParkingLots extends EventEmitter {
 
         let index = -1;
         if (this.currentCapacity <= this.capacity) {
-            for (let i = 0; i < this.vehicle.length; i++) {
-                if (this.vehicle[i] == vehicle) {
+            for (let i = 0; i < this.parkingSlot.length; i++) {
+                if (this.parkingSlot[i] == vehicle) {
                     index = i;
-                    this.vehicle.splice(index, 1, undefined);
+                    this.parkingSlot.splice(index, 1, undefined);
                     break;
                 }
             }
@@ -70,7 +70,7 @@ class ParkingLots extends EventEmitter {
         let emptySlotsArray = []
         if (this.currentCapacity < this.capacity) {
             for (let i = 0; i < this.capacity; i++) {
-                if (this.vehicle[i] == null) {
+                if (this.parkingSlot[i] == null) {
                     emptySlotsArray.push(i);
                 }
             }
@@ -81,29 +81,17 @@ class ParkingLots extends EventEmitter {
     checkAlreadyPark(vehicle) {
         let isParked = false;
         for (let i = 0; i < this.capacity; i++) {
-            if (this.vehicle[i] === vehicle) {
+            if (this.parkingSlot[i] === vehicle) {
                 throw new Error('Vehicle is already parked');
             }
         }
         return isParked;
     }
 
-    // checkVehicleIsAvaiableToUnpark(vehicle) {
-    //     console.log(this.vehicle)
-    //     console.log(this.vehicle[0]==vehicle)
-    //     for (let i = 0; i < this.capacity; i++) {
-    //         if (this.vehicle[i] == vehicle) {
-    //             return true;
-    //         }
-    //     }
-    //     throw new Error('Vehicle is already parked');
-    //
-    // }
-
     findMyVehicle(vehicle) {
         let slotIndex = -1;
-        for (let i = 0; i < this.vehicle.length; i++) {
-            if (this.vehicle[i] == vehicle) {
+        for (let i = 0; i < this.parkingSlot.length; i++) {
+            if (this.parkingSlot[i] == vehicle) {
                 slotIndex = i;
                 break;
             }
