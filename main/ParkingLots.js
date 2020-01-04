@@ -15,16 +15,18 @@ class ParkingLots extends EventEmitter {
     }
 
     park(vehicle, slotNumber) {
-        if (vehicle === undefined)
-            throw new Error('vehicle can not be undefined');
+        if (vehicle === undefined || vehicle == null)
+            throw new Error('vehicle can not be undefined or null');
 
-        if (vehicle == null)
-            throw new Error('vehicle can not be null');
-        let isParked = this.checkAlreadyPark(vehicle);
+        let isParked = false;
+        if (this.currentCapacity != 0)
+            isParked = this.checkAlreadyPark(vehicle.vehicle);
+
         if (!isParked) {
             if (this.currentCapacity < this.capacity) {
                 this.parkingSlot[slotNumber] = vehicle;
                 this.currentCapacity++;
+                console.log(this.parkingSlot);
                 return false;
             } else {
                 const e = {message: ""}
@@ -35,10 +37,9 @@ class ParkingLots extends EventEmitter {
     }
 
     unPark(vehicle) {
-        if (vehicle === undefined)
-            throw new Error('vehicle can not be undefined');
-        if (vehicle == null)
-            throw new Error('vehicle can not be null');
+        if (vehicle === undefined || vehicle == null)
+            throw new Error('vehicle can not be undefined or null');
+
         let isAvailable = false;
         if (this.capacity == this.currentCapacity) {
             isAvailable = true;
@@ -47,16 +48,17 @@ class ParkingLots extends EventEmitter {
         let index = -1;
         if (this.currentCapacity <= this.capacity) {
             for (let i = 0; i < this.parkingSlot.length; i++) {
-                if (this.parkingSlot[i] == vehicle) {
-                    index = i;
-                    this.parkingSlot.splice(index, 1, undefined);
-                    break;
+                if (this.parkingSlot[i] != undefined) {
+                    if (this.parkingSlot[i].vehicle == vehicle.vehicle) {
+                        index = i;
+                        this.parkingSlot.splice(index, 1, undefined);
+                        break;
+                    }
                 }
             }
             this.currentCapacity--;
             if (index == -1)
                 throw new Error('Vehicle is already parked');
-            return true;
         }
 
         if (isAvailable) {
@@ -64,6 +66,7 @@ class ParkingLots extends EventEmitter {
             this.emit('isEmpty', e);
             return e.message;
         }
+        return true;
     }
 
     giveEmptySlots() {
@@ -80,9 +83,11 @@ class ParkingLots extends EventEmitter {
 
     checkAlreadyPark(vehicle) {
         let isParked = false;
-        for (let i = 0; i < this.capacity; i++) {
-            if (this.parkingSlot[i] === vehicle) {
-                throw new Error('Vehicle is already parked');
+        for (let i = 0; i < this.parkingSlot.length; i++) {
+            if (this.parkingSlot[i] != undefined) {
+                if (this.parkingSlot[i].vehicle === vehicle) {
+                    throw new Error('Vehicle is already parked');
+                }
             }
         }
         return isParked;
@@ -90,10 +95,13 @@ class ParkingLots extends EventEmitter {
 
     findMyVehicle(vehicle) {
         let slotIndex = -1;
+        console.log(vehicle);
         for (let i = 0; i < this.parkingSlot.length; i++) {
-            if (this.parkingSlot[i] == vehicle) {
-                slotIndex = i;
-                break;
+            if (this.parkingSlot[i] != undefined) {
+                if (this.parkingSlot[i].vehicle == vehicle.vehicle) {
+                    slotIndex = i;
+                    break;
+                }
             }
         }
         return slotIndex;
