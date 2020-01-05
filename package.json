@@ -1,0 +1,19 @@
+{
+  "name": "parkinglot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nyc": "^15.0.0"
+  },
+  "dependencies": {
+    "dateformat": "^3.0.3",
+    "sleep": "^6.1.0"
+  }
+}
