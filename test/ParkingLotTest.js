@@ -59,6 +59,7 @@ describe('test for parking vehicle in parking lot', () => {
         let day1=new Date();
         assert.equal(parkingLotObject.park({'vehicle':vehicle1,'inTime':day1}),false);
     });
+
 });
 
 describe('test for un parking vehicle from parking lot', () => {
@@ -138,7 +139,7 @@ describe('test for checking empty parking slot', () => {
         let vehicle1 = new vehicle.Vehicle();
         let parkingLotObject = new Parkinglot.ParkingLots();
         parkingLotObject.createParkingLotArray(2,[4,3])
-        parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"});
+        parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"},);
         let vehicle2 = new vehicle.Vehicle();
         parkingLotObject.park({'vehicle':vehicle2,'inTime':"2012-05-18 05:37:21"});
         let vehicle3 = new vehicle.Vehicle();
@@ -152,27 +153,32 @@ describe('test for checking empty parking slot', () => {
         parkingLotObject.park({'vehicle':new vehicle.Vehicle(),'inTime':"2012-05-18 05:37:21"});
         let arr = parkingLotObject.giveEmptySlots();
         console.log(arr);
-        assert.equal(arr, [ { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 1, j: 1 }, { i: 1, j: 2 } ]);
+        let expectedArray=[ { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 1, j: 1 }, { i: 1, j: 2 } ];
+        assert.equal(arr, expectedArray);
     });
 
-    it('given vehicles when parked and two unparked  empty slot', () => {
+    it('given vehicles when parked and handicap driver come for parke should return nearest lot', () => {
         let parkingLotObject = new Parkinglot.ParkingLots(5);
         parkingLotObject.createParkingLotArray(3,[3,3,3])
         let vehicle1 = new vehicle.Vehicle();
-        parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"});
+        parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"},true);
         let vehicle2 = new vehicle.Vehicle();
-        parkingLotObject.park({'vehicle':vehicle2,'inTime':"2012-05-18 05:37:21"});
+        parkingLotObject.park({'vehicle':vehicle2,'inTime':"2012-05-18 06:37:21"},false);
         let vehicle3 = new vehicle.Vehicle();
-        parkingLotObject.park({'vehicle':vehicle3,'inTime':"2012-05-18 05:37:21"});
+        parkingLotObject.park({'vehicle':vehicle3,'inTime':"2012-05-18 07:37:21"},false);
         let vehicle4 = new vehicle.Vehicle();
-        parkingLotObject.park({'vehicle':vehicle4,'inTime':"2012-05-18 05:37:21"});
-
+        parkingLotObject.park({'vehicle':vehicle4,'inTime':"2012-05-18 08:37:21"},true);
+        let vehicle5 = new vehicle.Vehicle();
+        parkingLotObject.park({'vehicle':vehicle5,'inTime':"2012-05-18 09:37:21"},true);
+        let vehicle6 = new vehicle.Vehicle();
+        parkingLotObject.park({'vehicle':vehicle6,'inTime':"2012-05-18 10:37:21"},true);
+        assert.equal(parkingLotObject.getParkingLot(true),1)
 
     });
 });
 
 describe('test for finding vehicle in parking lot', () => {
-    it('given vehicle should return slotnumber of parkinglot', () => {
+    it('given vehicle when parked should return slot number of parkinglot', () => {
         let vehicle1 = new vehicle.Vehicle();
         let parkingLotObject = new Parkinglot.ParkingLots();
         parkingLotObject.createParkingLotArray(3,[5,4,4]);

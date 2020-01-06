@@ -4,30 +4,29 @@ const EventEmitter = require('events').EventEmitter;
 
 class ParkingLots extends EventEmitter {
     parkingLot;
-    capacity;
-    currentCapacity;
+    currentCapacity = [];
 
     constructor(capacity) {
         super();
         this.capacity = capacity;
-        this.currentCapacity = 0;
     }
 
-    park(vehicle) {
+    park(vehicle, isHandicap) {
 
         if (vehicle === undefined || vehicle == null)
             throw new Error('vehicle can not be undefined or null');
 
         let isParked = false;
-        if (this.currentCapacity != 0)
+
+        let parkingLotNumber = this.getParkingLot(isHandicap);
+        if (this.currentCapacity[parkingLotNumber] != 0)
             isParked = this.checkAlreadyPark(vehicle.vehicle);
-        let parkingLotNumber = this.getParkingLot();
         if (!isParked) {
-            if (this.currentCapacity < this.parkingLot[parkingLotNumber].length) {
+            if (this.currentCapacity[parkingLotNumber] < this.parkingLot[parkingLotNumber].length) {
                 for (let i = 0; i < this.parkingLot[parkingLotNumber].length; i++) {
                     if (this.parkingLot[parkingLotNumber][i] == undefined) {
                         this.parkingLot[parkingLotNumber][i] = vehicle;
-                        this.currentCapacity++;
+                        this.currentCapacity[parkingLotNumber]++;
                         break;
                     }
                 }
@@ -49,27 +48,21 @@ class ParkingLots extends EventEmitter {
         let index = -1;
 
         for (let i = 0; i < this.parkingLot.length; i++) {
-            console.log(i);
-            console.log("Unparked");
-            console.log(this.parkingLot.length);
-            console.log(i,this.parkingLot[i]);
-            console.log(this.currentCapacity);
             if (this.parkingLot[i].length == this.currentCapacity) {
                 isAvailable = true;
             }
-            if (this.currentCapacity <= this.parkingLot[i].length) {
+            if (this.currentCapacity[i] <= this.parkingLot[i].length) {
                 for (let j = 0; j < this.parkingLot[i].length; j++) {
                     if (this.parkingLot[i][j] != undefined && this.parkingLot[i][j].vehicle == vehicle.vehicle) {
                         index = i;
-                        console.log(vehicle)
-                        this.parkingLot[i][j]=undefined;
-                        this.currentCapacity--;
+                        this.parkingLot[i][j] = undefined;
+                        this.currentCapacity[i]--;
                         break;
                     }
                 }
             }
         }
-
+        console.log(this.parkingLot)
         if (index == -1)
             throw new Error('Vehicle is already parked');
         if (isAvailable) {
@@ -84,12 +77,12 @@ class ParkingLots extends EventEmitter {
     giveEmptySlots() {
         let emptySlotsArray = [];
         for (let i = 0; i < this.parkingLot.length; i++) {
-           for (let j = 0; j < this.parkingLot[i].length; j++) {
-                    if (this.parkingLot[i][j] === undefined ) {
-                        emptySlotsArray.push({i,j});
-                    }
+            for (let j = 0; j < this.parkingLot[i].length; j++) {
+                if (this.parkingLot[i][j] === undefined) {
+                    emptySlotsArray.push({i, j});
                 }
             }
+        }
 
         return emptySlotsArray;
     }
@@ -113,19 +106,17 @@ class ParkingLots extends EventEmitter {
         console.log(vehicle);
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
-                console.log("Before checking",this.parkingLot[i][j]);
-                console.log("CHecking variable",vehicle.vehicle);
+                console.log("Before checking", this.parkingLot[i][j]);
+                console.log("CHecking variable", vehicle.vehicle);
                 console.log(j);
-            if(this.parkingLot[i][j] === undefined)
-            {
-                break;
+                if (this.parkingLot[i][j] === undefined) {
+                    break;
+                } else if (this.parkingLot[i][j].vehicle == vehicle.vehicle) {
+                    slotIndex = i;
+                    break;
+                }
             }
-            else if (this.parkingLot[i][j].vehicle == vehicle.vehicle  ) {
-                slotIndex = i;
-                break;
-            }
-            }
-       }
+        }
         return slotIndex;
     }
 
@@ -133,6 +124,7 @@ class ParkingLots extends EventEmitter {
         this.parkingLot = [];
         for (let i = 0; i < numberLots; i++) {
             this.parkingLot[i] = new Array()
+            this.currentCapacity[i] = 0;
             for (let j = 0; j < lotsCapacity[i]; j++) {
                 this.parkingLot[i][j] = undefined;
             }
@@ -140,29 +132,40 @@ class ParkingLots extends EventEmitter {
         console.log(this.parkingLot);
     }
 
-    getParkingLot() {
+    getParkingLot(isHandicap) {
         let slotCountArray = [];
-        console.log(this.parkingLot.length);
         for (let i = 0; i < this.parkingLot.length; i++) {
             let count = 0;
             for (let j = 0; j < this.parkingLot[i].length; j++) {
-                console.log(this.parkingLot[i].length);
-                if (this.parkingLot[i][j] == undefined) {
+                 if (this.parkingLot[i][j] == undefined) {
                     count++;
                 }
             }
             slotCountArray[i] = count;
         }
         let max = slotCountArray[0];
+        let min = slotCountArray[0];
+
         let lotNumber = 0;
-        for (let i = 1; i < slotCountArray.length; i++) {
-            if (max < slotCountArray[i]) {
-                console.log(max);
-                console.log(slotCountArray);
-                lotNumber = i;
+        if (isHandicap) {
+            for (let i = 0; i < slotCountArray.length; i++) {
+                if (this.currentCapacity[i] <= this.parkingLot[i].length) {
+                    if (min > slotCountArray[i] && slotCountArray[i] != 0 || min == 0) {
+                        lotNumber = i;
+                        min = slotCountArray[i]
+                    }
+                }
+            }
+
+        } else {
+            for (let i = 1; i < slotCountArray.length; i++) {
+                console.log(this.parkingLot[i].length + "NotHandicap")
+                if (max < slotCountArray[i] && slotCountArray[i] != 0) {
+                    lotNumber = i;
+                    max = slotCountArray[i]
+                }
             }
         }
-        console.log(lotNumber);
         return lotNumber;
     }
 
