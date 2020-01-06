@@ -165,7 +165,7 @@ class ParkingLots extends EventEmitter {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
                 if (this.parkingLot[i][j] === undefined) {
                     break;
-                } else if (this.parkingLot[i][j].vehicle.color == color && this.parkingLot[i][j].vehicle.model==model) {
+                } else if (this.parkingLot[i][j].vehicle.color == color || color==undefined && this.parkingLot[i][j].vehicle.model==model) {
                     slotIndex.push({"vehicle number":this.parkingLot[i][j].vehicle.numberPlate,"lotNumber": i, "slotNumber": j});
                 }
             }
