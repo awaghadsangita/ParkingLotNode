@@ -1,5 +1,7 @@
 class Vehicle{
-    constructor(){
+    vehicleType;
+    constructor(vehicleType){
+        this.vehicleType=vehicleType;
     }
 }
 module.exports={Vehicle}

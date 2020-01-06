@@ -30,6 +30,7 @@ class ParkingLots extends EventEmitter {
                         break;
                     }
                 }
+                console.log(this.parkingLot);
                 return false;
             } else {
                 const e = {message: ""}

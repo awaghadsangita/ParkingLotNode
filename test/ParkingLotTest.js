@@ -60,6 +60,19 @@ describe('test for parking vehicle in parking lot', () => {
         assert.equal(parkingLotObject.park({'vehicle':vehicle1,'inTime':day1}),false);
     });
 
+    it('given large vehicles when parked should park in most empty spaces', () => {
+        let vehicle1 = new vehicle.Vehicle("Large Vehicle");
+        let vehicle2=new vehicle.Vehicle("Small Vehicle");
+        let vehicle3=new vehicle.Vehicle("Large Vehicle");
+        let vehicle4=new vehicle.Vehicle("Large Vehicle");
+        let parkingLotObject = new Parkinglot.ParkingLots();
+        parkingLotObject.createParkingLotArray(3,[3,3,3]);
+        let day1=new Date();
+        parkingLotObject.park({'vehicle':vehicle1,'inTime':day1});
+        parkingLotObject.park({'vehicle':vehicle2,'inTime':day1});
+        parkingLotObject.park({"vehicle":vehicle3,'inTime':day1});
+        assert.equal(parkingLotObject.getParkingLot(false),0)
+    });
 });
 
 describe('test for un parking vehicle from parking lot', () => {
