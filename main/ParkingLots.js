@@ -158,15 +158,15 @@ class ParkingLots extends EventEmitter {
         return lotNumber;
     }
 
-    findGivenColorVehicle = (color) => {
+    findGivenColorVehicle = (color,model) => {
         let slotIndex = [];
         console.log(color);
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
                 if (this.parkingLot[i][j] === undefined) {
                     break;
-                } else if (this.parkingLot[i][j].vehicle.color == color) {
-                    slotIndex.push({"lotNumber": i, "slotNumber": j});
+                } else if (this.parkingLot[i][j].vehicle.color == color && this.parkingLot[i][j].vehicle.model==model) {
+                    slotIndex.push({"vehicle number":this.parkingLot[i][j].vehicle.numberPlate,"lotNumber": i, "slotNumber": j});
                 }
             }
         }

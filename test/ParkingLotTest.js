@@ -221,7 +221,7 @@ describe('test for finding lot and slot number from colors ', () => {
      it('given a vehicle with color when parked should return  white color vehicle slot and lot number', () => {
          let parkingLotObject = new Parkinglot.ParkingLots();
          parkingLotObject.createParkingLotArray(3, [3, 3, 3])
-         let vehicle1 = new vehicle.Vehicle("Large vehicle", "red");
+         let vehicle1 = new vehicle.Vehicle("Large vehicle","red");
          parkingLotObject.park({'vehicle': vehicle1, 'inTime': "2012-05-18 05:37:21"});
          let vehicle2 = new vehicle.Vehicle("Small vehicle", "white");
          parkingLotObject.park({'vehicle': vehicle2, 'inTime': "2012-05-18 06:37:21"});
@@ -230,4 +230,16 @@ describe('test for finding lot and slot number from colors ', () => {
          let result=parkingLotObject.findGivenColorVehicle("white");
          assert.equal(result,[ { "lotNumber": 1, "slotNumber": 0 }, { "lotNumber": 2, "slotNumber": 0 } ])
      });
+    it('given a vehicle with color,numberPlate,model when parked should return  blue color toyoto vehicle', () => {
+        let parkingLotObject = new Parkinglot.ParkingLots();
+        parkingLotObject.createParkingLotArray(3, [3, 3, 3])
+        let vehicle1 = new vehicle.Vehicle("Large vehicle", "red","MH21-3456","Creta");
+        parkingLotObject.park({'vehicle': vehicle1, 'inTime': "2012-05-18 05:37:21"});
+        let vehicle2 = new vehicle.Vehicle("Small vehicle", "white","MH23-5678","Nano");
+        parkingLotObject.park({'vehicle': vehicle2, 'inTime': "2012-05-18 06:37:21"});
+        let vehicle3 = new vehicle.Vehicle("Small vehicle", "blue","MH32-1234","Toyoto");
+        parkingLotObject.park({'vehicle': vehicle3, 'inTime': "2012-05-18 07:37:21"});
+        let result=parkingLotObject.findGivenColorVehicle("blue","Toyoto");
+        assert.equal(result,[  {'vehicle number': 'MH32-1234', lotNumber: 2, slotNumber: 0}])
+    });
  });
