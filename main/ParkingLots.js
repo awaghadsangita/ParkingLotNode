@@ -6,9 +6,8 @@ class ParkingLots extends EventEmitter {
     parkingLot;
     currentCapacity = [];
 
-    constructor(capacity) {
+    constructor() {
         super();
-        this.capacity = capacity;
     }
 
     park(vehicle, isHandicap) {
@@ -17,10 +16,11 @@ class ParkingLots extends EventEmitter {
             throw new Error('vehicle can not be undefined or null');
 
         let isParked = false;
-
         let parkingLotNumber = this.getParkingLot(isHandicap);
+
         if (this.currentCapacity[parkingLotNumber] != 0)
             isParked = this.checkAlreadyPark(vehicle.vehicle);
+
         if (!isParked) {
             if (this.currentCapacity[parkingLotNumber] < this.parkingLot[parkingLotNumber].length) {
                 for (let i = 0; i < this.parkingLot[parkingLotNumber].length; i++) {
@@ -30,7 +30,6 @@ class ParkingLots extends EventEmitter {
                         break;
                     }
                 }
-                console.log(this.parkingLot);
                 return false;
             } else {
                 const e = {message: ""}
@@ -62,7 +61,6 @@ class ParkingLots extends EventEmitter {
                 }
             }
         }
-        console.log(this.parkingLot)
         if (index == -1)
             throw new Error('Vehicle is already parked');
         if (isAvailable) {
@@ -83,7 +81,6 @@ class ParkingLots extends EventEmitter {
                 }
             }
         }
-
         return emptySlotsArray;
     }
 
@@ -92,8 +89,6 @@ class ParkingLots extends EventEmitter {
         for (let i = 0; i < this.parkingLot.length; i++) {
             if (this.parkingLot[i] !== undefined) {
                 if (this.parkingLot[i].vehicle == vehicle) {
-                    console.log(this.parkingLot[i].vehicle)
-                    console.log(vehicle);
                     throw new Error('Vehicle is already parked');
                 }
             }
@@ -106,9 +101,6 @@ class ParkingLots extends EventEmitter {
         console.log(vehicle);
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
-                console.log("Before checking", this.parkingLot[i][j]);
-                console.log("CHecking variable", vehicle.vehicle);
-                console.log(j);
                 if (this.parkingLot[i][j] === undefined) {
                     break;
                 } else if (this.parkingLot[i][j].vehicle == vehicle.vehicle) {
@@ -129,7 +121,6 @@ class ParkingLots extends EventEmitter {
                 this.parkingLot[i][j] = undefined;
             }
         }
-        console.log(this.parkingLot);
     }
 
     getParkingLot(isHandicap) {
@@ -137,30 +128,27 @@ class ParkingLots extends EventEmitter {
         for (let i = 0; i < this.parkingLot.length; i++) {
             let count = 0;
             for (let j = 0; j < this.parkingLot[i].length; j++) {
-                 if (this.parkingLot[i][j] == undefined) {
+                if (this.parkingLot[i][j] == undefined) {
                     count++;
                 }
             }
             slotCountArray[i] = count;
         }
+
         let max = slotCountArray[0];
         let min = slotCountArray[0];
-
         let lotNumber = 0;
+
         if (isHandicap) {
             for (let i = 0; i < slotCountArray.length; i++) {
-                if (this.currentCapacity[i] <= this.parkingLot[i].length) {
-                    if (min > slotCountArray[i] && slotCountArray[i] != 0 || min == 0) {
-                        lotNumber = i;
-                        min = slotCountArray[i]
-                    }
+                if (min > slotCountArray[i] && slotCountArray[i] != 0 || min == 0) {
+                    lotNumber = i;
+                    min = slotCountArray[i]
                 }
             }
-
         } else {
             for (let i = 1; i < slotCountArray.length; i++) {
-                console.log(this.parkingLot[i].length + "NotHandicap")
-                if (max < slotCountArray[i] && slotCountArray[i] != 0) {
+                if (max < slotCountArray[i]) {
                     lotNumber = i;
                     max = slotCountArray[i]
                 }

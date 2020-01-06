@@ -139,7 +139,7 @@ describe('test for checking empty parking slot', () => {
         let vehicle1 = new vehicle.Vehicle();
         let parkingLotObject = new Parkinglot.ParkingLots();
         parkingLotObject.createParkingLotArray(2,[4,3])
-        parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"},);
+        parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"});
         let vehicle2 = new vehicle.Vehicle();
         parkingLotObject.park({'vehicle':vehicle2,'inTime':"2012-05-18 05:37:21"});
         let vehicle3 = new vehicle.Vehicle();
@@ -153,7 +153,7 @@ describe('test for checking empty parking slot', () => {
         parkingLotObject.park({'vehicle':new vehicle.Vehicle(),'inTime':"2012-05-18 05:37:21"});
         let arr = parkingLotObject.giveEmptySlots();
         console.log(arr);
-        let expectedArray=[ { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 1, j: 1 }, { i: 1, j: 2 } ];
+        let expectedArray=[ { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 1, j: 2 } ];
         assert.equal(arr, expectedArray);
     });
 
@@ -188,7 +188,7 @@ describe('test for finding vehicle in parking lot', () => {
         let vehicle3 = new vehicle.Vehicle();
         parkingLotObject.park({'vehicle':vehicle3,'inTime':"2012-05-18 05:37:21"});
         let result = parkingLotObject.findMyVehicle({'vehicle':vehicle3,'inTime':"2012-05-18 05:37:21"});
-        assert.equal(result, 2);
+        assert.equal(result, 1);
 
     })
 });
@@ -201,7 +201,6 @@ describe('test for evenly distribution of vehicle among lots', () => {
         parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"});
         let vehicle2 = new vehicle.Vehicle();
         parkingLotObject.park({'vehicle':vehicle2,'inTime':"2012-05-18 05:37:21"});
-        let vehicle3 = new vehicle.Vehicle();
-        assert.equal(parkingLotObject.getParkingLot(), 2);
+        assert.equal(parkingLotObject.getParkingLot(), 1);
     });
 });
