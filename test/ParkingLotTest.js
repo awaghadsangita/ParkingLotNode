@@ -64,7 +64,6 @@ describe('test for parking vehicle in parking lot', () => {
         let vehicle1 = new vehicle.Vehicle("Large Vehicle");
         let vehicle2=new vehicle.Vehicle("Small Vehicle");
         let vehicle3=new vehicle.Vehicle("Large Vehicle");
-        let vehicle4=new vehicle.Vehicle("Large Vehicle");
         let parkingLotObject = new Parkinglot.ParkingLots();
         parkingLotObject.createParkingLotArray(3,[3,3,3]);
         let day1=new Date();
@@ -208,7 +207,7 @@ describe('test for finding vehicle in parking lot', () => {
 
 describe('test for evenly distribution of vehicle among lots', () => {
     it('given vehicles when parked in lots and another come for parked should return parking lot number', () => {
-        let parkingLotObject = new Parkinglot.ParkingLots(5);
+        let parkingLotObject = new Parkinglot.ParkingLots();
         parkingLotObject.createParkingLotArray(3,[5,4,4])
         let vehicle1 = new vehicle.Vehicle();
         parkingLotObject.park({'vehicle':vehicle1,'inTime':"2012-05-18 05:37:21"});
@@ -217,3 +216,18 @@ describe('test for evenly distribution of vehicle among lots', () => {
         assert.equal(parkingLotObject.getParkingLot(), 1);
     });
 });
+
+describe('test for finding lot and slot number from colors ', () => {
+     it('given a vehicle with color when parked should return  white color vehicle slot and lot number', () => {
+         let parkingLotObject = new Parkinglot.ParkingLots();
+         parkingLotObject.createParkingLotArray(3, [3, 3, 3])
+         let vehicle1 = new vehicle.Vehicle("Large vehicle", "red");
+         parkingLotObject.park({'vehicle': vehicle1, 'inTime': "2012-05-18 05:37:21"});
+         let vehicle2 = new vehicle.Vehicle("Small vehicle", "white");
+         parkingLotObject.park({'vehicle': vehicle2, 'inTime': "2012-05-18 06:37:21"});
+         let vehicle3 = new vehicle.Vehicle("Small vehicle", "white");
+         parkingLotObject.park({'vehicle': vehicle3, 'inTime': "2012-05-18 07:37:21"});
+         let result=parkingLotObject.findGivenColorVehicle("white");
+         assert.equal(result,[ { "lotNumber": 1, "slotNumber": 0 }, { "lotNumber": 2, "slotNumber": 0 } ])
+     });
+ });
