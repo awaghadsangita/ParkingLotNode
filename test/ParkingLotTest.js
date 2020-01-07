@@ -230,7 +230,7 @@ describe('test for evenly distribution of vehicle among lots', () => {
     });
 });
 
-describe('test for finding lot and slot number from colors ', () => {
+describe('test for finding lot and slot number from vehicle attributes ', () => {
     it('given a vehicle with color when parked should return  white color vehicle slot and lot number', () => {
         let parkingLotObject = new Parkinglot.ParkingLots();
         parkingLotObject.createParkingLotArray(3, [3, 3, 3])
@@ -240,7 +240,7 @@ describe('test for finding lot and slot number from colors ', () => {
         parkingLotObject.park({'vehicle': vehicle2, 'inTime': "2012-05-18 06:37:21"});
         let vehicle3 = new vehicle.Vehicle("Small vehicle", "white", "MH32-1444");
         parkingLotObject.park({'vehicle': vehicle3, 'inTime': "2012-05-18 07:37:21"});
-        let result = parkingLotObject.findGivenColorVehicle("white");
+        let result = parkingLotObject.findVehicleFromAttributes("white");
         assert.deepEqual(result, [{'vehicle number': 'MH32-1240', lotNumber: 1, slotNumber: 0},
             {'vehicle number': 'MH32-1444', lotNumber: 2, slotNumber: 0}])
     });
@@ -253,7 +253,7 @@ describe('test for finding lot and slot number from colors ', () => {
         parkingLotObject.park({'vehicle': vehicle2, 'inTime': "2012-05-18 06:37:21"});
         let vehicle3 = new vehicle.Vehicle("Small vehicle", "blue", "MH32-1234", "Toyoto");
         parkingLotObject.park({'vehicle': vehicle3, 'inTime': "2012-05-18 07:37:21"});
-        let result = parkingLotObject.findGivenColorVehicle("blue", "Toyoto");
+        let result = parkingLotObject.findVehicleFromAttributes("blue", "Toyoto");
         assert.deepEqual(result, [{'vehicle number': 'MH32-1234', lotNumber: 2, slotNumber: 0}])
     });
 
@@ -267,7 +267,7 @@ describe('test for finding lot and slot number from colors ', () => {
 
         let vehicle3 = new vehicle.Vehicle("Small vehicle", "blue", "MH32-1234", "BMW");
         parkingLotObject.park({'vehicle': vehicle3, 'inTime': new Date()});
-        let result = parkingLotObject.findGivenColorVehicle(null, "BMW");
+        let result = parkingLotObject.findVehicleFromAttributes(null, "BMW");
         assert.deepEqual(result, [{'vehicle number': 'MH23-5678', lotNumber: 1, slotNumber: 0},
             {'vehicle number': 'MH32-1234', lotNumber: 2, slotNumber: 0}])
     });

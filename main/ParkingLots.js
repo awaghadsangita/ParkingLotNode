@@ -162,7 +162,7 @@ class ParkingLots extends EventEmitter {
         return lotNumber;
     }
 
-    findGivenColorVehicle = (color, model) => {
+    findVehicleFromAttributes = (color, model) => {
         let slotIndex = [];
         console.log(color);
         for (let i = 0; i < this.parkingLot.length; i++) {
