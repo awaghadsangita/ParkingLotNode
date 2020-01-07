@@ -25,12 +25,16 @@ class ParkingLots extends EventEmitter {
             if (this.currentCapacity[parkingLotNumber] < this.parkingLot[parkingLotNumber].length) {
                 for (let i = 0; i < this.parkingLot[parkingLotNumber].length; i++) {
                     if (this.parkingLot[parkingLotNumber][i] == undefined) {
-                        this.parkingLot[parkingLotNumber][i] = vehicle;
+                        let timeString = new Date().getHours() + ":" + new Date().getMinutes();
+                        let inTime = new Date(timeString)
+                        this.parkingLot[parkingLotNumber][i] = {
+                            "vehicle": vehicle,
+                            "inTime": vehicle.inTime
+                        };
                         this.currentCapacity[parkingLotNumber]++;
                         break;
                     }
                 }
-                console.log(this.parkingLot);
                 return false;
             } else {
                 const e = {message: ""}
@@ -104,7 +108,7 @@ class ParkingLots extends EventEmitter {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
                 if (this.parkingLot[i][j] === undefined) {
                     break;
-                } else if (this.parkingLot[i][j].vehicle == vehicle.vehicle) {
+                } else if (this.parkingLot[i][j].vehicle.vehicle == vehicle.vehicle) {
                     slotIndex = i;
                     break;
                 }
@@ -158,15 +162,41 @@ class ParkingLots extends EventEmitter {
         return lotNumber;
     }
 
-    findGivenColorVehicle = (color,model) => {
+    findGivenColorVehicle = (color, model) => {
         let slotIndex = [];
         console.log(color);
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
                 if (this.parkingLot[i][j] === undefined) {
                     break;
-                } else if (this.parkingLot[i][j].vehicle.color == color || color==undefined && this.parkingLot[i][j].vehicle.model==model) {
-                    slotIndex.push({"vehicle number":this.parkingLot[i][j].vehicle.numberPlate,"lotNumber": i, "slotNumber": j});
+                } else if (this.parkingLot[i][j].vehicle.vehicle.color == color || color == undefined && this.parkingLot[i][j].vehicle.vehicle.model == model) {
+                    slotIndex.push({
+                        "vehicle number": this.parkingLot[i][j].vehicle.vehicle.numberPlate,
+                        "lotNumber": i,
+                        "slotNumber": j
+                    });
+                }
+            }
+        }
+        return slotIndex;
+    }
+
+    findVehicle = (time) => {
+        let slotIndex = [];
+        for (let i = 0; i < this.parkingLot.length; i++) {
+            for (let j = 0; j < this.parkingLot[i].length; j++) {
+                if (this.parkingLot[i][j] === undefined) {
+                    break;
+                } else {
+                    let resultInMinutes = Math.round((new Date().getTime() - this.parkingLot[i][j].inTime) / 60000);
+                    if (resultInMinutes <= 30 && resultInMinutes >0 ) {
+                        console.log(this.parkingLot[i][j].vehicle.vehicle.numberPlate);
+                        slotIndex.push({
+                            "vehicle number": this.parkingLot[i][j].vehicle.vehicle.numberPlate,
+                            "lotNumber": i,
+                            "slotNumber": j
+                        });
+                    }
                 }
             }
         }
