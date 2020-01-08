@@ -232,7 +232,9 @@ class ParkingLots extends EventEmitter {
                 for (let j = 0; j < this.parkingLot[i].length; j++) {
                     if (j == rows[row]) {
                         for (let k = 0; k < this.parkingLot[i][j].length; k++) {
-                            if (this.parkingLot[i][j][k] != undefined && this.parkingLot[i][j][k].isHandicap == true && this.parkingLot[i][j][k].vehicle.vehicle.vehicleType == vehicleType) {
+                            if (this.parkingLot[i][j][k] != undefined
+                                && this.parkingLot[i][j][k].isHandicap == true
+                                && this.parkingLot[i][j][k].vehicle.vehicle.vehicleType == vehicleType) {
                                 slotIndex.push({
                                     "vehicle number": this.parkingLot[i][j][k].vehicle.vehicle.numberPlate,
                                     "lotNumber": i,
@@ -268,24 +270,13 @@ class ParkingLots extends EventEmitter {
 }
 
 
-let
-    parkinglotObject = new ParkingLots(1)
-parkinglotObject
-    .on(
-        "isFull"
-        , (
-            e
-        ) => {
-            e
-                .message = "lot is Full";
-            parkingLotOwner
-                .isFull(e);
-
-            airportSecurity
-                .isFull(e);
-        }
-    )
-;
+let parkinglotObject = new ParkingLots(1)
+parkinglotObject.on("isFull", (e) => {
+        e.message = "lot is Full";
+        parkingLotOwner.isFull(e);
+        airportSecurity.isFull(e);
+    }
+);
 
 parkinglotObject.on("isEmpty", (e) => {
     e.message = "free space available"
