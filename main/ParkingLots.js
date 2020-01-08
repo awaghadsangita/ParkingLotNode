@@ -107,7 +107,6 @@ class ParkingLots extends EventEmitter {
 
     findMyVehicle(vehicle) {
         let slotIndex = -1;
-        console.log("dddddddd", vehicle);
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
                 for (let k = 0; k < this.parkingLot[i][j].length; k++) {
@@ -141,7 +140,6 @@ class ParkingLots extends EventEmitter {
     getParkingLot(isHandicap) {
         let slotCountArray = [];
         for (let i = 0; i < this.parkingLot.length; i++) {
-
             slotCountArray[i] = new Array()
             for (let j = 0; j < this.parkingLot[i].length; j++) {
                 let count = 0;
@@ -153,10 +151,10 @@ class ParkingLots extends EventEmitter {
                 slotCountArray[i][j] = count;
             }
         }
+
         let max = slotCountArray[0][0];
         let min = slotCountArray[0][0];
         let lotNumber = {'row': 0, 'lot': 0};
-
         if (isHandicap) {
             for (let i = 0; i < slotCountArray.length; i++) {
                 for (let j = 0; j < slotCountArray.length; j++) {
@@ -181,7 +179,6 @@ class ParkingLots extends EventEmitter {
 
     findVehicleFromAttributes = (color, model) => {
         let slotIndex = [];
-
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
                 for (let k = 0; k < this.parkingLot[i][j].length; k++) {

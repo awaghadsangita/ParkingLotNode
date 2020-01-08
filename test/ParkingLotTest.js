@@ -1,7 +1,6 @@
 let assert = require('assert');
 let Parkinglot = require('../main/ParkingLots');
 let vehicle = require('../main/Vehicle');
-let sleep = require("sleep");
 
 describe('test for parking vehicle in parking lot', () => {
     it('given vehicle when parked should return false', () => {
@@ -297,6 +296,7 @@ describe('test for finding location of all vehicle which parked before half hour
         ])
     });
 });
+
 describe('test for finding location of all vehicle given driver Property(isHandicap) and vehicle Type ', () => {
     it('given a vehicles when parked should return vehicle which are small and driver is handicap', () => {
         let parkingLotObject = new Parkinglot.ParkingLots();
