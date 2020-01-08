@@ -36,7 +36,6 @@ class ParkingLots extends EventEmitter {
                         break;
                     }
                 }
-                console.log(this.parkingLot);
                 return false;
             } else {
                 const e = {message: ""}
@@ -239,7 +238,28 @@ class ParkingLots extends EventEmitter {
         }
         return slotIndex;
     }
+
+    findAllVehicles() {
+        let slotIndex = [];
+        for (let i = 0; i < this.parkingLot.length; i++) {
+            for (let j = 0; j < this.parkingLot[i].length; j++) {
+                for (let k = 0; k < this.parkingLot[i][j].length; k++) {
+                    if (this.parkingLot[i][j][k] != undefined) {
+                        slotIndex.push({
+                            "vehicle number": this.parkingLot[i][j][k].vehicle.vehicle.numberPlate,
+                            "lotNumber": i,
+                            "slotNumber": j
+                        });
+                    }
+                }
+            }
+        }
+        return slotIndex;
+    }
 }
+
+
+
 
 let parkinglotObject = new ParkingLots(1)
 parkinglotObject.on("isFull", (e) => {

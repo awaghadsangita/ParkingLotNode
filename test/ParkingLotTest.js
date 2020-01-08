@@ -311,3 +311,21 @@ describe('test for finding location of all vehicle given driver Property(isHandi
         assert.deepEqual(result, [{'vehicle number': 'MH22-5678', lotNumber: 0, slotNumber: 1}]);
     });
 });
+
+describe('test for finding location of all vehicle', () => {
+    it('given a vehicles when parked should return all vehicle information ', () => {
+        let parkingLotObject = new Parkinglot.ParkingLots();
+        parkingLotObject.createParkingLotArray(2, [4, 4], [4, 4]);
+        let vehicle1 = new vehicle.Vehicle("Large vehicle", "red", "MH21-3456", "Creta");
+        parkingLotObject.park({'vehicle': vehicle1, "inTime": new Date(Date.now() - (5 * 60 * 1000)).getTime()}, false);
+        let vehicle2 = new vehicle.Vehicle("Small vehicle", "white", "MH23-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle2, "inTime": new Date().getTime()}, true);
+        let vehicle3 = new vehicle.Vehicle("Large vehicle", "white", "MH21-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle3, "inTime": new Date().getTime()}, true);
+        let result = parkingLotObject.findAllVehicles()
+        assert.deepEqual(result, [{'vehicle number': 'MH21-3456', lotNumber: 0, slotNumber: 0},
+            {'vehicle number': 'MH23-5678', lotNumber: 0, slotNumber: 0},
+            {'vehicle number': 'MH21-5678', lotNumber: 0, slotNumber: 0}]);
+
+    });
+});
