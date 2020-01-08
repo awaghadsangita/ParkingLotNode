@@ -5,9 +5,11 @@ const EventEmitter = require('events').EventEmitter;
 class ParkingLots extends EventEmitter {
     parkingLot;
     currentCapacity = [];
+    row;
 
     constructor() {
         super();
+        this.row = new Map();
     }
 
     park(vehicle, isHandicap) {
@@ -22,19 +24,19 @@ class ParkingLots extends EventEmitter {
             isParked = this.checkAlreadyPark(vehicle.vehicle);
 
         if (!isParked) {
-            if (this.currentCapacity[parkingLotNumber] < this.parkingLot[parkingLotNumber].length) {
-                for (let i = 0; i < this.parkingLot[parkingLotNumber].length; i++) {
-                    if (this.parkingLot[parkingLotNumber][i] == undefined) {
-                        let timeString = new Date().getHours() + ":" + new Date().getMinutes();
-                        let inTime = new Date(timeString)
-                        this.parkingLot[parkingLotNumber][i] = {
+            if (this.currentCapacity[parkingLotNumber.row][parkingLotNumber.lot] < this.parkingLot[parkingLotNumber.row][parkingLotNumber.lot].length) {
+                for (let i = 0; i < this.parkingLot[parkingLotNumber.row].length; i++) {
+                    if (this.parkingLot[parkingLotNumber.row][parkingLotNumber.lot][i] == undefined) {
+                        this.parkingLot[parkingLotNumber.row][parkingLotNumber.lot][i] = {
                             "vehicle": vehicle,
-                            "inTime": vehicle.inTime
+                            "inTime": vehicle.inTime,
+                            "isHandicap": isHandicap
                         };
-                        this.currentCapacity[parkingLotNumber]++;
+                        this.currentCapacity[parkingLotNumber.row][parkingLotNumber.lot]++;
                         break;
                     }
                 }
+                console.log(this.parkingLot);
                 return false;
             } else {
                 const e = {message: ""}
@@ -52,16 +54,18 @@ class ParkingLots extends EventEmitter {
         let index = -1;
 
         for (let i = 0; i < this.parkingLot.length; i++) {
-            if (this.parkingLot[i].length == this.currentCapacity) {
-                isAvailable = true;
-            }
-            if (this.currentCapacity[i] <= this.parkingLot[i].length) {
-                for (let j = 0; j < this.parkingLot[i].length; j++) {
-                    if (this.parkingLot[i][j] != undefined && this.parkingLot[i][j].vehicle == vehicle.vehicle) {
-                        index = i;
-                        this.parkingLot[i][j] = undefined;
-                        this.currentCapacity[i]--;
-                        break;
+            for (let j = 0; j < this.parkingLot[i].length; j++) {
+                if (this.parkingLot[i][j].length == this.currentCapacity[i][j]) {
+                    isAvailable = true;
+                }
+                if (this.currentCapacity[i][j] <= this.parkingLot[i][j].length) {
+                    for (let k = 0; k < this.parkingLot[i][j].length; k++) {
+                        if (this.parkingLot[i][j][k] != undefined && this.parkingLot[i][j][k].vehicle.vehicle == vehicle) {
+                            index = i;
+                            this.parkingLot[i][j][k] = undefined;
+                            this.currentCapacity[i][j]--;
+                            break;
+                        }
                     }
                 }
             }
@@ -117,13 +121,17 @@ class ParkingLots extends EventEmitter {
         return slotIndex;
     }
 
-    createParkingLotArray(numberLots, lotsCapacity) {
+    createParkingLotArray(numberLots, lotsCapacity, rows) {
         this.parkingLot = [];
         for (let i = 0; i < numberLots; i++) {
             this.parkingLot[i] = new Array()
-            this.currentCapacity[i] = 0;
-            for (let j = 0; j < lotsCapacity[i]; j++) {
-                this.parkingLot[i][j] = undefined;
+            this.currentCapacity[i] = new Array();
+
+            for (let j = 0; j < rows[i]; j++) {
+                this.currentCapacity[i][j] = 0
+                this.parkingLot[i][j] = new Array()
+                for (let k = 0; k < lotsCapacity[i]; k++)
+                    this.parkingLot[i][j][k] = undefined;
             }
         }
     }
@@ -131,31 +139,38 @@ class ParkingLots extends EventEmitter {
     getParkingLot(isHandicap) {
         let slotCountArray = [];
         for (let i = 0; i < this.parkingLot.length; i++) {
-            let count = 0;
-            for (let j = 0; j < this.parkingLot[i].length; j++) {
-                if (this.parkingLot[i][j] == undefined) {
-                    count++;
-                }
-            }
-            slotCountArray[i] = count;
-        }
 
-        let max = slotCountArray[0];
-        let min = slotCountArray[0];
-        let lotNumber = 0;
+            slotCountArray[i] = new Array()
+            for (let j = 0; j < this.parkingLot[i].length; j++) {
+                let count = 0;
+                for (let k = 0; k < this.parkingLot[i][j].length; k++) {
+                    if (this.parkingLot[i][j][k] == undefined) {
+                        count++;
+                    }
+                }
+                slotCountArray[i][j] = count;
+            }
+        }
+        let max = slotCountArray[0][0];
+        let min = slotCountArray[0][0];
+        let lotNumber = {'row': 0, 'lot': 0};
 
         if (isHandicap) {
             for (let i = 0; i < slotCountArray.length; i++) {
-                if (min > slotCountArray[i] && slotCountArray[i] != 0 || min == 0) {
-                    lotNumber = i;
-                    min = slotCountArray[i]
+                for (let j = 0; j < slotCountArray.length; j++) {
+                    if (min > slotCountArray[i][j] && slotCountArray[i][j] != 0 || min == 0) {
+                        lotNumber = {'row': i, 'lot': j};
+                        min = slotCountArray[i][j];
+                    }
                 }
             }
         } else {
-            for (let i = 1; i < slotCountArray.length; i++) {
-                if (max < slotCountArray[i]) {
-                    lotNumber = i;
-                    max = slotCountArray[i]
+            for (let i = 0; i < slotCountArray.length; i++) {
+                for (let j = 0; j < slotCountArray.length; j++) {
+                    if (max < slotCountArray[i][j] && slotCountArray[i][j] != 0) {
+                        lotNumber = {'row': i, 'lot': j};
+                        max = slotCountArray[i][j];
+                    }
                 }
             }
         }
@@ -189,13 +204,35 @@ class ParkingLots extends EventEmitter {
                     break;
                 } else {
                     let resultInMinutes = Math.round((new Date().getTime() - this.parkingLot[i][j].inTime) / 60000);
-                    if (resultInMinutes <= 30 && resultInMinutes >0 ) {
+                    if (resultInMinutes <= 30 && resultInMinutes > 0) {
                         console.log(this.parkingLot[i][j].vehicle.vehicle.numberPlate);
                         slotIndex.push({
                             "vehicle number": this.parkingLot[i][j].vehicle.vehicle.numberPlate,
                             "lotNumber": i,
                             "slotNumber": j
                         });
+                    }
+                }
+            }
+        }
+        return slotIndex;
+    }
+
+    findLocationGivenLotRowsAndVehicleType(rows, vehicleType) {
+        let slotIndex = [];
+        for (let i = 0; i < this.parkingLot.length; i++) {
+            for (let row = 0; row < rows.length; row++) {
+                for (let j = 0; j < this.parkingLot[i].length; j++) {
+                    if (j == rows[row]) {
+                        for (let k = 0; k < this.parkingLot[i][j].length; k++) {
+                            if (this.parkingLot[i][j][k] != undefined && this.parkingLot[i][j][k].isHandicap == true && this.parkingLot[i][j][k].vehicle.vehicle.vehicleType == vehicleType) {
+                                slotIndex.push({
+                                    "vehicle number": this.parkingLot[i][j][k].vehicle.vehicle.numberPlate,
+                                    "lotNumber": i,
+                                    "slotNumber": j
+                                });
+                            }
+                        }
                     }
                 }
             }

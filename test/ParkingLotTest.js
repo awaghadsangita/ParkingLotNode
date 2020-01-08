@@ -179,7 +179,7 @@ describe('test for checking empty parking slot', () => {
         let arr = parkingLotObject.giveEmptySlots();
         console.log(arr);
         let expectedArray = [{i: 0, j: 2}, {i: 0, j: 3}, {i: 1, j: 2}];
-        assert.equal(arr, expectedArray);
+        assert.deepEqual(arr, expectedArray);
     });
 
     it('given vehicles when parked and handicap driver come for parke should return nearest lot', () => {
@@ -287,5 +287,27 @@ describe('test for finding location of all vehicle which parked before half hour
         let result = parkingLotObject.findVehicle(30);
         assert.deepEqual(result, [{'vehicle number': 'MH21-3456', lotNumber: 0, slotNumber: 0},
             {'vehicle number': 'MH32-1234', lotNumber: 2, slotNumber: 0}])
+    });
+});
+describe('test for finding location of all vehicle given driver Property(isHandicap) and vehicle Type ', () => {
+    it('given a vehicles when parked should return vehicle which are small and driver is handicap', () => {
+        let parkingLotObject = new Parkinglot.ParkingLots();
+        parkingLotObject.createParkingLotArray(2, [4, 4], [4, 4]);
+        let vehicle1 = new vehicle.Vehicle("Large vehicle", "red", "MH21-3456", "Creta");
+        parkingLotObject.park({'vehicle': vehicle1, "inTime": new Date(Date.now() - (5 * 60 * 1000)).getTime()}, false);
+        let vehicle2 = new vehicle.Vehicle("Small vehicle", "white", "MH23-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle2, "inTime": new Date().getTime()}, true);
+        let vehicle3 = new vehicle.Vehicle("Large vehicle", "white", "MH21-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle3, "inTime": new Date().getTime()}, true);
+        let vehicle4 = new vehicle.Vehicle("Small vehicle", "white", "MH22-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle4, "inTime": new Date().getTime()}, true);
+        let vehicle5 = new vehicle.Vehicle("Small vehicle", "white", "MH22-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle5, "inTime": new Date().getTime()}, true);
+        let vehicle6 = new vehicle.Vehicle("Small vehicle", "white", "MH22-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle6, "inTime": new Date().getTime()}, false);
+        let vehicle7 = new vehicle.Vehicle("Small vehicle", "white", "MH22-5678", "BMW");
+        parkingLotObject.park({'vehicle': vehicle7, "inTime": new Date().getTime()}, false);
+        let result = parkingLotObject.findLocationGivenLotRowsAndVehicleType([1, 3], 'Small vehicle');
+        assert.deepEqual(result, [{'vehicle number': 'MH22-5678', lotNumber: 0, slotNumber: 1}]);
     });
 });
