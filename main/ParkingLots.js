@@ -59,11 +59,13 @@ class ParkingLots extends EventEmitter {
                 }
                 if (this.currentCapacity[i][j] <= this.parkingLot[i][j].length) {
                     for (let k = 0; k < this.parkingLot[i][j].length; k++) {
-                        if (this.parkingLot[i][j][k] != undefined && this.parkingLot[i][j][k].vehicle.vehicle == vehicle) {
-                            index = i;
-                            this.parkingLot[i][j][k] = undefined;
-                            this.currentCapacity[i][j]--;
-                            break;
+                        if (this.parkingLot[i][j][k] != undefined) {
+                            if (this.parkingLot[i][j][k].vehicle.vehicle == vehicle) {
+                                index = i;
+                                this.parkingLot[i][j][k] = undefined;
+                                this.currentCapacity[i][j]--;
+                                break;
+                            }
                         }
                     }
                 }
@@ -76,7 +78,6 @@ class ParkingLots extends EventEmitter {
             this.emit('isEmpty', e);
             return e.message;
         }
-
         return true;
     }
 
@@ -106,17 +107,19 @@ class ParkingLots extends EventEmitter {
 
     findMyVehicle(vehicle) {
         let slotIndex = -1;
-        console.log(vehicle);
+        console.log("dddddddd", vehicle);
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
-                if (this.parkingLot[i][j] === undefined) {
-                    break;
-                } else if (this.parkingLot[i][j].vehicle.vehicle == vehicle.vehicle) {
-                    slotIndex = i;
-                    break;
+                for (let k = 0; k < this.parkingLot[i][j].length; k++) {
+                    console.log(this.parkingLot[i][j][k]);
+                    if (this.parkingLot[i][j][k] != undefined && this.parkingLot[i][j][k].vehicle.vehicle == vehicle.vehicle) {
+                        slotIndex = i;
+                        break;
+                    }
                 }
             }
         }
+
         return slotIndex;
     }
 
@@ -178,17 +181,22 @@ class ParkingLots extends EventEmitter {
 
     findVehicleFromAttributes = (color, model) => {
         let slotIndex = [];
-        console.log(color);
+
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
-                if (this.parkingLot[i][j] === undefined) {
-                    break;
-                } else if (this.parkingLot[i][j].vehicle.vehicle.color == color || color == undefined && this.parkingLot[i][j].vehicle.vehicle.model == model) {
-                    slotIndex.push({
-                        "vehicle number": this.parkingLot[i][j].vehicle.vehicle.numberPlate,
-                        "lotNumber": i,
-                        "slotNumber": j
-                    });
+                for (let k = 0; k < this.parkingLot[i][j].length; k++) {
+                    if (this.parkingLot[i][j][k] != undefined) {
+                        if (this.parkingLot[i][j][k].vehicle.vehicle.color == color
+                            || color == undefined
+                            && this.parkingLot[i][j][k].vehicle.vehicle.model == model) {
+                            slotIndex.push({
+                                "vehicle number": this.parkingLot[i][j][k].vehicle.vehicle.numberPlate,
+                                "lotNumber": i,
+                                "rowNumber": j,
+                                "slotNumber": k
+                            });
+                        }
+                    }
                 }
             }
         }
@@ -199,22 +207,22 @@ class ParkingLots extends EventEmitter {
         let slotIndex = [];
         for (let i = 0; i < this.parkingLot.length; i++) {
             for (let j = 0; j < this.parkingLot[i].length; j++) {
-                if (this.parkingLot[i][j] === undefined) {
-                    break;
-                } else {
-                    let resultInMinutes = Math.round((new Date().getTime() - this.parkingLot[i][j].inTime) / 60000);
-                    if (resultInMinutes <= 30 && resultInMinutes > 0) {
-                        console.log(this.parkingLot[i][j].vehicle.vehicle.numberPlate);
-                        slotIndex.push({
-                            "vehicle number": this.parkingLot[i][j].vehicle.vehicle.numberPlate,
-                            "lotNumber": i,
-                            "slotNumber": j
-                        });
+                for (let k = 0; k < this.parkingLot[i][j].length; k++) {
+                    if (this.parkingLot[i][j][k] != undefined) {
+                        let resultInMinutes = Math.round((new Date().getTime() - this.parkingLot[i][j][k].inTime) / 60000);
+                        if (resultInMinutes <= 30 && resultInMinutes > 0) {
+                            slotIndex.push({
+                                "vehicle number": this.parkingLot[i][j][k].vehicle.vehicle.numberPlate,
+                                "lotNumber": i,
+                                "rowNumber": j,
+                                "slotNumber": k
+                            });
+                        }
                     }
                 }
             }
+            return slotIndex;
         }
-        return slotIndex;
     }
 
     findLocationGivenLotRowsAndVehicleType(rows, vehicleType) {
@@ -228,7 +236,8 @@ class ParkingLots extends EventEmitter {
                                 slotIndex.push({
                                     "vehicle number": this.parkingLot[i][j][k].vehicle.vehicle.numberPlate,
                                     "lotNumber": i,
-                                    "slotNumber": j
+                                    "rowNumber": j,
+                                    "slotNumber": k
                                 });
                             }
                         }
@@ -259,14 +268,24 @@ class ParkingLots extends EventEmitter {
 }
 
 
+let
+    parkinglotObject = new ParkingLots(1)
+parkinglotObject
+    .on(
+        "isFull"
+        , (
+            e
+        ) => {
+            e
+                .message = "lot is Full";
+            parkingLotOwner
+                .isFull(e);
 
-
-let parkinglotObject = new ParkingLots(1)
-parkinglotObject.on("isFull", (e) => {
-    e.message = "lot is Full";
-    parkingLotOwner.isFull(e);
-    airportSecurity.isFull(e);
-});
+            airportSecurity
+                .isFull(e);
+        }
+    )
+;
 
 parkinglotObject.on("isEmpty", (e) => {
     e.message = "free space available"
